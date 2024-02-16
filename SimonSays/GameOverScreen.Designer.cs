@@ -65,7 +65,7 @@
             this.lengthLabel.Name = "lengthLabel";
             this.lengthLabel.Size = new System.Drawing.Size(25, 28);
             this.lengthLabel.TabIndex = 2;
-            this.lengthLabel.Text = "0";
+            this.lengthLabel.Text = $"{Form1.pattern.Count}";
             // 
             // closeButton
             // 
@@ -90,7 +90,6 @@
             this.Controls.Add(this.gameOverLabel);
             this.Name = "GameOverScreen";
             this.Size = new System.Drawing.Size(452, 462);
-            this.Load += new System.EventHandler(this.GameOverScreen_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

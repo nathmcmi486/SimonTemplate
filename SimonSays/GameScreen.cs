@@ -14,8 +14,29 @@ namespace SimonSays
 {
     public partial class GameScreen : UserControl
     {
-        //TODO: create an int guess variable to track what part of the pattern the user is at
+        // Represents -----
+        const int GREEN = 0;
+        const int RED = 1;
+        const int YELLOW = 2;
+        const int BLUE = 3;
 
+        int waitTime = 340;
+
+        SoundPlayer[] sounds = 
+        { 
+            new SoundPlayer(Properties.Resources.green), 
+            new SoundPlayer(Properties.Resources.red), 
+            new SoundPlayer(Properties.Resources.yellow),
+            new SoundPlayer(Properties.Resources.blue),
+        };
+
+        Color[] backColors =
+        {
+            Color.LightGreen,
+            Color.OrangeRed,
+            Color.LightYellow,
+            Color.LightBlue,
+        };
 
         public GameScreen()
         {
@@ -24,43 +45,218 @@ namespace SimonSays
 
         private void GameScreen_Load(object sender, EventArgs e)
         {
-            //TODO: clear the pattern list from form1
-            //TODO: refresh
-            //TODO: pause for a bit
-            //TODO: run ComputerTurn()
+            Form1.pattern.Clear();
+
+            refreshWait();
+            ComputerTurn();
+        }
+
+        private void refreshWait()
+        {
+            this.Refresh();
+            System.Threading.Thread.Sleep(waitTime);
         }
 
         private void ComputerTurn()
         {
-            //TODO: get rand num between 0 and 4 (0, 1, 2, 3) and add to pattern list. Each number represents a button. For example, 0 may be green, 1 may be blue, etc.
+            Random rand = new Random();
+            int newColor = 0;
 
-            //TODO: create a for loop that shows each value in the pattern by lighting up approriate button
+            // idk what else it would be called
+            bool goodColor = false;
 
-            //TODO: set guess value back to 0
+            while (goodColor == false)
+            {
+                //System.Diagnostics.Debug.WriteLine("loop");
+                newColor = rand.Next(GREEN, BLUE + 1);
+                // Stops the same color from being used
+                if (Form1.pattern.Count() > 3)
+                {
+                    int length = Form1.pattern.Count();
+                    if (Form1.pattern[length - 1] != newColor)
+                    {
+                        // System.Diagnostics.Debug.WriteLine("here");
+                        goodColor = true;
+                    }
+                } else
+                {
+                    // System.Diagnostics.Debug.WriteLine("here1");
+                    goodColor = true;
+                }
+
+                // System.Diagnostics.Debug.WriteLine("here2");
+            }
+
+            Form1.pattern.Add(newColor);
+
+            if (Form1.pattern.Count() % 5 == 0)
+            {
+                this.otherButton.Enabled = true;
+                this.otherButton.Visible = true;
+                Form1.otherPattern.Add(rand.Next(2, 9));
+            } else
+            {
+                this.otherButton.Enabled = false;
+                this.otherButton.Visible = false;
+            }
+
+            // System.Diagnostics.Debug.WriteLine("here3");
+            int otherPatternCount = 0;
+
+            for (int i = 0; i < Form1.pattern.Count(); i++)
+            {
+                Color currentColor;
+
+                if ((i + 1) % 5 == 0 && i != 0)
+                {
+                    for (int j = 0; j < Form1.otherPattern[i / 5]; j++)
+                    {
+                        currentColor = otherButton.BackColor;
+                        otherButton.BackColor = Color.Gold;
+                        refreshWait();
+                        otherButton.BackColor = currentColor;
+                        refreshWait();
+                    }
+                }
+
+                switch (Form1.pattern[i])
+                {
+                    case GREEN:
+                        currentColor = greenButton.BackColor;
+                        greenButton.BackColor = backColors[GREEN];
+                        sounds[GREEN].Play();
+                        refreshWait();
+                        greenButton.BackColor = currentColor;
+                        refreshWait();
+
+                        break;
+                    case RED:
+                        currentColor = redButton.BackColor;
+                        redButton.BackColor = backColors[RED];
+                        sounds[RED].Play();
+                        refreshWait();
+                        redButton.BackColor = currentColor;
+                        refreshWait();
+
+                        break;
+                    case YELLOW:
+                        currentColor = yellowButton.BackColor;
+                        yellowButton.BackColor = backColors[YELLOW];
+                        sounds[YELLOW].Play();
+                        refreshWait();
+                        yellowButton.BackColor = currentColor;
+                        refreshWait();
+
+                        break;
+                    case BLUE:
+                        currentColor = blueButton.BackColor;
+                        blueButton.BackColor = backColors[BLUE];
+                        sounds[BLUE].Play();
+                        refreshWait();
+                        blueButton.BackColor = currentColor;
+                        refreshWait();
+
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
-        //TODO: create one of these event methods for each button
-        private void greenButton_Click(object sender, EventArgs e)
+        private void colorButton_Click(object sender, EventArgs e)
         {
-            //TODO: is the value in the pattern list at index [guess] equal to a green?
-                // change button color
-                // play sound
-                // refresh
-                // pause
-                // set button colour back to original
-                // add one to the guess variable
-             
-            //TODO:check to see if we are at the end of the pattern, (guess is the same as pattern list count).
-                // call ComputerTurn() method
-                // else call GameOver method
+            //System.Diagnostics.Debug.WriteLine($"{sender.GetType()}");
+            Button b = sender as Button;
+            bool correctGuess = false;
+            Color currentColor;
+
+            switch (b.Name)
+            {
+                case "greenButton":
+                    if (Form1.pattern[Form1.currentGuessN] == GREEN)
+                    {
+                        correctGuess = true;
+                        currentColor = this.greenButton.BackColor;
+                        this.greenButton.BackColor = backColors[GREEN];
+                        sounds[GREEN].Play();
+                        this.refreshWait();
+                        this.greenButton.BackColor = currentColor;
+                        refreshWait();
+                        Form1.currentGuessN += 1;
+                    }
+
+                    break;
+                case "redButton":
+                    if (Form1.pattern[Form1.currentGuessN] == RED)
+                    {
+                        correctGuess = true;
+                        currentColor = this.redButton.BackColor;
+                        this.redButton.BackColor = backColors[RED];
+                        sounds[RED].Play();
+                        this.refreshWait();
+                        this.redButton.BackColor = currentColor;
+                        refreshWait();
+                        Form1.currentGuessN += 1;
+                    }
+
+
+                    break;
+                case "yellowButton":
+                    if (Form1.pattern[Form1.currentGuessN] == YELLOW)
+                    {
+                        correctGuess = true;
+                        currentColor = this.yellowButton.BackColor;
+                        this.yellowButton.BackColor = backColors[YELLOW];
+                        sounds[YELLOW].Play();
+                        this.refreshWait();
+                        this.yellowButton.BackColor = currentColor;
+                        refreshWait();
+                        Form1.currentGuessN += 1;
+                    }
+
+                    break;
+                case "blueButton":
+                    if (Form1.pattern[Form1.currentGuessN] == BLUE)
+                    {
+                        correctGuess = true;
+                        currentColor = this.blueButton.BackColor;
+                        this.blueButton.BackColor = backColors[BLUE];
+                        sounds[BLUE].Play();
+                        this.refreshWait();
+                        this.blueButton.BackColor = currentColor;
+                        refreshWait();
+                        Form1.currentGuessN += 1;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
+            if (correctGuess == false)
+            {
+                SoundPlayer mistakeSound = new SoundPlayer(Properties.Resources.mistake);
+                mistakeSound.Play();
+
+                GameOver();
+            } else if (Form1.currentGuessN == Form1.pattern.Count)
+            {
+                Form1.currentGuessN = 0;
+                ComputerTurn();
+            }
         }
 
         public void GameOver()
         {
-            //TODO: Play a game over sound
+            SoundPlayer mistakeSound = new SoundPlayer(Properties.Resources.mistake);
+            for (int i = 0; i <= 5; i++)
+            {
+                mistakeSound.Load();
+                mistakeSound.Play();
+                refreshWait();
+            }
 
-            //TODO: close this screen and open the GameOverScreen
-
+            Form1.changeScreen(this, new GameOverScreen());
         }
     }
 }
