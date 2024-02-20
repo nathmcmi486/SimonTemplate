@@ -46,6 +46,7 @@ namespace SimonSays
         private void GameScreen_Load(object sender, EventArgs e)
         {
             Form1.pattern.Clear();
+            Form1.otherPattern.Clear();
 
             refreshWait();
             ComputerTurn();
@@ -59,6 +60,7 @@ namespace SimonSays
 
         private void ComputerTurn()
         {
+            Form1.otherPatternClicks = 0;
             Random rand = new Random();
             int newColor = 0;
 
@@ -89,15 +91,11 @@ namespace SimonSays
 
             Form1.pattern.Add(newColor);
 
-            if (Form1.pattern.Count() % 5 == 0)
+            if (Form1.pattern.Count() > 5)
             {
                 this.otherButton.Enabled = true;
                 this.otherButton.Visible = true;
-                Form1.otherPattern.Add(rand.Next(2, 9));
-            } else
-            {
-                this.otherButton.Enabled = false;
-                this.otherButton.Visible = false;
+                Form1.pattern.Add(rand.Next(4, 9));
             }
 
             // System.Diagnostics.Debug.WriteLine("here3");
@@ -106,18 +104,6 @@ namespace SimonSays
             for (int i = 0; i < Form1.pattern.Count(); i++)
             {
                 Color currentColor;
-
-                if ((i + 1) % 5 == 0 && i != 0)
-                {
-                    for (int j = 0; j < Form1.otherPattern[i / 5]; j++)
-                    {
-                        currentColor = otherButton.BackColor;
-                        otherButton.BackColor = Color.Gold;
-                        refreshWait();
-                        otherButton.BackColor = currentColor;
-                        refreshWait();
-                    }
-                }
 
                 switch (Form1.pattern[i])
                 {
@@ -157,7 +143,17 @@ namespace SimonSays
                         refreshWait();
 
                         break;
+                    // Assuming it's for "otherButton"
                     default:
+                        for (int j = 0; j < Form1.pattern[i]; j++)
+                        {
+                            currentColor = otherButton.BackColor;
+                            otherButton.BackColor = Color.Gold;
+                            refreshWait();
+                            otherButton.BackColor = currentColor;
+                            refreshWait();
+                        }
+
                         break;
                 }
             }
@@ -228,6 +224,26 @@ namespace SimonSays
                         Form1.currentGuessN += 1;
                     }
 
+                    break;
+                case "otherButton":
+                    currentColor = this.otherButton.BackColor;
+                    this.otherButton.BackColor = Color.Gold;
+                    this.refreshWait();
+                    this.otherButton.BackColor = currentColor;
+                    this.refreshWait();
+
+                    if (Form1.pattern[Form1.currentGuessN] == Form1.otherPatternClicks)
+                    {
+                        Form1.currentGuessN += 1;
+                        correctGuess = true;
+                    }
+
+                    Form1.otherPatternClicks += 1;
+
+                    if (correctGuess == false)
+                    {
+                        return;
+                    }
                     break;
                 default:
                     break;

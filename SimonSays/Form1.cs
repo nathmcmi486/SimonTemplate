@@ -14,10 +14,11 @@ namespace SimonSays
 {
     public partial class Form1 : Form
     {
-        //TODO: create a List to store the pattern. Must be accessable on other screens
         public static List<int> pattern = new List<int>();
-        public static List<int> otherPattern = new List<int>();
         public static int currentGuessN = 0;
+        // Another pattern that shows up every 5 turns
+        public static List<int> otherPattern = new List<int>();
+        public static int otherPatternClicks = 0;
 
         public Form1()
         {
@@ -29,7 +30,7 @@ namespace SimonSays
             changeScreen(this, new MenuScreen());
         }
 
-        // For changing between existing screens
+        // For changing between screens
         public static void changeScreen(UserControl currentScreen, UserControl newScreen)
         {
             Form f = currentScreen.FindForm();
