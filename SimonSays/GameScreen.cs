@@ -272,6 +272,7 @@ namespace SimonSays
                 refreshWait();
             }
 
+            mistakeSound.Play();
             Form1.changeScreen(this, new GameOverScreen());
         }
     }

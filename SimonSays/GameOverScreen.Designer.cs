@@ -65,7 +65,7 @@
             this.lengthLabel.Name = "lengthLabel";
             this.lengthLabel.Size = new System.Drawing.Size(25, 28);
             this.lengthLabel.TabIndex = 2;
-            this.lengthLabel.Text = $"{Form1.pattern.Count}";
+            this.lengthLabel.Text = Form1.pattern.Count + "";
             // 
             // closeButton
             // 
